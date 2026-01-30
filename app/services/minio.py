@@ -12,7 +12,7 @@ class MINIOservice:
             access_key=os.getenv("MINIO_ACCESS_KEY"),
             secret_key=os.getenv("MINIO_SECRET_KEY"),
             secure=os.getenv("MINIO_SECURE").lower() == "true"
-
+        )
          
     
     def upload_file(self, file_path: str, object_name: str):
