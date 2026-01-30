@@ -22,9 +22,9 @@ class MINIOservice:
                 object_name=object_name,
                 file_path=file_path,
             )
-            print(f"File {file_path} uploaded as {object_name} in bucket {os.getenv('MINIO_BUCKET')}.")
+            return(f"File {file_path} uploaded as {object_name} in bucket {os.getenv('MINIO_BUCKET')}.")
         except S3Error as e:
-            print(f"Error occurred: {e}")
+            return(f"Error occurred: {e}")
     
     def download_file(self, object_name: str, file_path: str):
         try:
@@ -33,6 +33,6 @@ class MINIOservice:
                 object_name=object_name,
                 file_path=file_path,
             )
-            print(f"File {object_name} downloaded to {file_path}.")
+            return(f"File {object_name} downloaded to {file_path}.")
         except S3Error as e:
-            print(f"Error occurred: {e}")   
+            return(f"Error occurred: {e}")   
