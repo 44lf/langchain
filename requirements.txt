@@ -10,3 +10,10 @@ langchain-huggingface
 langchain-text-splitters
 sentence-transformers
 torch
+pymilvus>=2.4.0
+minio>=7.2.0
+langchain-text-splitters>=0.2.0
+langchain-huggingface>=0.1.0
+
+
+

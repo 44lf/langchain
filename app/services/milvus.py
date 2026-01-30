@@ -39,7 +39,8 @@ class MILVUSService:
             FieldSchema(name="desc", dtype=DataType.VARCHAR, max_length=100)
         ]
 
-        schema = CollectionSchema(fields, description=f"使用:{metric_type}的集合")
+        schema = CollectionSchema(fields, description=f"collection for {metric_type}")
+
         collection = Collection(
             name=f"{self.collection_name}_{metric_type.lower()}",  # 使用self
             schema=schema,
@@ -59,3 +60,14 @@ class MILVUSService:
         mr = collection.insert([vectors, labels, descs])
         collection.flush()
         return mr
+
+    def connect(self):
+        """连接到Milvus"""
+        connections.connect(
+            alias=self.milvus_alias,
+            host='localhost',
+            port='19530'
+        )
+
+    def get_collection_name(self, metric_type: str) -> str:
+        return f"{self.collection_name}_{metric_type.lower()}"
