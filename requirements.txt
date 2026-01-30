@@ -3,3 +3,9 @@ langchain-deepseek==1.0.1
 python-dotenv>=1.0.0
 fastapi>=0.110
 uvicorn[standard]>=0.24
+
+pymilvus
+minio
+langchain-huggingface
+langchain-text-splitters
+sentence-transformers

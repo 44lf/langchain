@@ -1,4 +1,4 @@
-from loading import load_dotenv
+from dotenv import load_dotenv
 from minio import Minio
 from minio.error import S3Error, InvalidResponseError
 import os
@@ -27,12 +27,10 @@ class MINIOservice:
             return(f"Error occurred: {e}")
     
     def download_file(self, object_name: str, file_path: str):
-        try:
-            self.Client.fget_object(
-                bucket_name=os.getenv("MINIO_BUCKET"),
-                object_name=object_name,
-                file_path=file_path,
-            )
-            return(f"File {object_name} downloaded to {file_path}.")
-        except S3Error as e:
-            return(f"Error occurred: {e}")   
+        self.Client.fget_object(
+            bucket_name=os.getenv("MINIO_BUCKET"),
+            object_name=object_name,
+            file_path=file_path,
+        )
+        with open(file_path, 'r', encoding='utf-8') as f:
+            return f.read()
