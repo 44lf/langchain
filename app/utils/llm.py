@@ -2,7 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from langchain_deepseek.chat_models import ChatDeepSeek
-
+load_dotenv()
 
 
 

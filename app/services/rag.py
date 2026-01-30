@@ -10,7 +10,7 @@ class RAG:
     @staticmethod
     def load_texts(file_path,object_name):
         minio = MINIOservice()
-        text = minio.download_file(file_path,object_name)
+        text = minio.download_file(object_name,file_path)
         return [(text,file_path)]
     
     @staticmethod
@@ -40,7 +40,24 @@ class RAG:
     
     @staticmethod
     def search(query,top_k=3):
-        return [relevant_texts]
+        from app.utils.embedding import EmbeddingUtils
+        milvus = MILVUSService()
+        milvus.setup_milvus()
+        collection = Collection(os.getenv("MILVUS_DEFAULT_COLLECTION") + "_l2")
+        collection.load()
+
+        embedder = EmbeddingUtils()
+        query_vector = embedder.embed_query(query)
+
+        results = collection.search(
+            data=[query_vector],
+            anns_field="vector",
+            param={"metric_type": "L2", "params": {"nprobe": 10}},
+            limit=top_k,
+            output_fields=["desc"]
+        )
+
+        return [hit.entity.get('desc') for hit in results[0]]
     
     @staticmethod
     def generate_answer(relevant_texts, query):
