@@ -16,4 +16,17 @@ langchain-text-splitters>=0.2.0
 langchain-huggingface>=0.1.0
 
 
+# 混合检索新增依赖
+# ====================
 
+# BM25关键词检索
+rank-bm25==0.2.2
+
+# 中文分词
+jieba==0.42.1
+
+# (可选) 后续如果要用Rerank
+# sentence-transformers>=2.2.0
+
+# 使用说明:
+# pip install rank-bm25 jieba --break-system-packages
