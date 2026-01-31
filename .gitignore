@@ -8,9 +8,9 @@ __pycache__/
 *.pyc
 *.pyo
 
-# 本地环境变量
-.env
-.env.*
+# # 本地环境变量
+# .env
+# .env.*
 
 # IDE
 .vscode/
