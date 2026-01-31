@@ -8,7 +8,7 @@ load_dotenv()
 import os
 
 class RAG:
-    SIMILARITY_THRESHOLD = 1.2  # L2距离阈值,根据实际调整
+    SIMILARITY_THRESHOLD = 0.8  # L2距离阈值,根据实际调整
     
     # ✅ 新增：最大chunk长度(与Milvus schema一致)
     MAX_CHUNK_LENGTH = 1900  # 留100字符余量
@@ -106,7 +106,7 @@ class RAG:
             print(f"  内容前100字: {content[:100]}...")
             
             # 过滤相似度低的结果
-            if distance >= RAG.SIMILARITY_THRESHOLD:
+            if distance <= RAG.SIMILARITY_THRESHOLD:
                 filtered_results.append(content)
             else:
                 print(f"  [已过滤: 相似度过低]")
@@ -114,6 +114,13 @@ class RAG:
         print(f"\n过滤后结果数: {len(filtered_results)}/{len(results[0])}")
         print("=" * 50 + "\n")
 
+        if len(filtered_results) < top_k and len(results[0]) > len(filtered_results):
+            # 添加一些未达到阈值但相对较近的结果
+            all_results = [hit.entity.get('desc') for hit in results[0]]
+            remaining_count = top_k - len(filtered_results)
+            additional_results = [all_results[i] for i in range(len(filtered_results), min(len(all_results), len(filtered_results) + remaining_count))]
+            filtered_results.extend(additional_results)
+        
         return filtered_results[:top_k] if filtered_results else [hit.entity.get('desc') for hit in results[0][:top_k]]
     
     @staticmethod
