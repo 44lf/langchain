@@ -36,7 +36,7 @@ class MILVUSService:
             FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),
             FieldSchema(name="vector", dtype=DataType.FLOAT_VECTOR, dim=dim),
             FieldSchema(name="label", dtype=DataType.INT64),
-            FieldSchema(name="desc", dtype=DataType.VARCHAR, max_length=500)
+            FieldSchema(name="desc", dtype=DataType.VARCHAR, max_length=2000)
         ]
 
         schema = CollectionSchema(fields, description=f"collection for {metric_type}")
@@ -57,7 +57,16 @@ class MILVUSService:
     
     def insert_vector(self, collection, vectors, labels, descs):
         """插入向量数据"""
-        mr = collection.insert([vectors, labels, descs])
+        max_length = 2000
+        truncated_descs = []
+        for desc in descs:
+            if len(desc) > max_length:
+                truncated = desc[:max_length-3] + "..."
+                truncated_descs.append(truncated)
+            else:
+                truncated_descs.append(desc)
+        
+        mr = collection.insert([vectors, labels, truncated_descs])
         collection.flush()
         return mr
 
