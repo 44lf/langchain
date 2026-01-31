@@ -4,7 +4,7 @@ class EmbeddingUtils:
     @staticmethod
     def get_embeddings():
         return HuggingFaceEmbeddings(
-            model_name="sentence-transformers/all-MiniLM-L6-v2"
+            model_name="shibing624/text2vec-base-chinese"
         )
 
     def embed_documents(self, texts: list[str]):
