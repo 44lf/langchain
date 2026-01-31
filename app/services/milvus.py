@@ -36,7 +36,7 @@ class MILVUSService:
             FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),
             FieldSchema(name="vector", dtype=DataType.FLOAT_VECTOR, dim=dim),
             FieldSchema(name="label", dtype=DataType.INT64),
-            FieldSchema(name="desc", dtype=DataType.VARCHAR, max_length=100)
+            FieldSchema(name="desc", dtype=DataType.VARCHAR, max_length=500)
         ]
 
         schema = CollectionSchema(fields, description=f"collection for {metric_type}")
