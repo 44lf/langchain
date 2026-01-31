@@ -8,7 +8,7 @@ load_dotenv()
 import os
 
 class RAG:
-    SIMILARITY_THRESHOLD = 0.8  # L2距离阈值,根据实际调整
+    SIMILARITY_THRESHOLD = 2  # L2距离阈值,根据实际调整
     
     # ✅ 新增：最大chunk长度(与Milvus schema一致)
     MAX_CHUNK_LENGTH = 1900  # 留100字符余量
@@ -146,3 +146,4 @@ class RAG:
                     【回答】"""
         response = llm.invoke([{"role":"user","content":prompt}])
         return response.content
+    
