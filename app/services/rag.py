@@ -9,13 +9,25 @@ import os
 
 class RAG:
     @staticmethod
-    def load_texts(file_path,object_name):
+    def load_texts(file_path, object_name):
+        """从MinIO下载文件并读取内容"""
         minio = MINIOservice()
-        text = minio.download_file(object_name,file_path)
-        return text
+        result = minio.download_file(object_name, file_path)
+        
+        # 检查下载是否成功
+        if result.startswith("错误") or result.startswith("S3错误") or result.startswith("未知错误"):
+            raise Exception(f"MinIO下载失败: {result}")
+        
+        # 如果download_file返回的是文件内容(文本),直接返回
+        if os.path.exists(file_path):
+            with open(file_path, 'r', encoding='utf-8') as f:
+                return f.read()
+        else:
+            # 如果返回的是内容字符串
+            return result
     
     @staticmethod
-    def chunk_texts(text,chunk_size=50, overlap=5):
+    def chunk_texts(text, chunk_size=50, overlap=5):
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=chunk_size,
             chunk_overlap=overlap,
@@ -42,6 +54,7 @@ class RAG:
     
     @staticmethod
     def build_index(file_path, object_name):
+        """构建索引的完整流程"""
         text = RAG.load_texts(file_path, object_name)
         chunks = RAG.chunk_texts(text)
         vectors = RAG.embed_chunks(chunks)
@@ -54,9 +67,8 @@ class RAG:
         texts = RAG.search(query, top_k=top_k)
         return RAG.generate_answer(texts, query)
 
-
     @staticmethod
-    def search(query,top_k=3):
+    def search(query, top_k=3):
         from app.utils.embedding import EmbeddingUtils
         milvus = MILVUSService()
         milvus.connect()
@@ -84,16 +96,3 @@ class RAG:
         prompt = f"Based on the following context:\n{context}\nAnswer the question:\n{query}"
         response = llm.invoke([{"role":"user","content":prompt}])
         return response.content
-    
-#def main():
-#     file_path = ""
-#     texts = RAG.load_texts(file_path)
-#     chunked_texts = RAG.chunk_texts(texts)
-#     query = "Your question here"
-#     relevant_texts = RAG.search(query)
-#     answer = RAG.generate_answer(relevant_texts, query)
-#     print("Answer:", answer)
-
-
-# if __name__ == "__main__":
-#     main()
